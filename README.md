@@ -1,0 +1,1 @@
+A Node.js application to open multiple consoles in ConEmu
