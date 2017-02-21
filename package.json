@@ -1,18 +1,17 @@
 {
-  "name": "start-services",
+  "name": "conemu-grid",
   "version": "1.0.0",
-  "description": "Add device type",
+  "description": "A Node.js application to open multiple consoles in ConEmu.",
   "main": "index.js",
   "dependencies": {
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "device",
-    "type"
+    "conemu",
+    "node"
   ],
-  "author": "Omar Diego Vera Ustariz",
+  "author": "Kilian Henkel",
   "license": "ISC"
 }
