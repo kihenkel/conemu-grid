@@ -40,3 +40,5 @@ const AppsPath = 'C:/apps/my-apps';
 
 module.exports = { Methods, ConEmuPath, AppsPath };
 ```
+Now you can call the application with your provided method, eg.:
+`node .\index.js serve`
