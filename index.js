@@ -6,14 +6,14 @@ const { Methods, ConEmuPath, ServicesPath } = require('./config');
 let amountColumns = 0;
 let amountRows = 0;
 
-const APPLICATION = '*powershell.exe';
+const APPLICATION = 'cmd.exe';
+const PARAM_EXIT = '/c';
+const PARAM_NO_EXIT = '/k';
 const PARAM_RUNLIST = '-runlist';
-const PARAM_CONSOLE = '-cur_console';
-const PARAM_CONSOLE_PATH = `${PARAM_CONSOLE}:d:`;
-const PARAM_CONSOLE_NAME = `${PARAM_CONSOLE}:t:`;
-const PARAM_COMMAND = `-Command`;
-const PARAM_NO_LOGO = '-NoLogo';
-const PARAM_NO_EXIT = '-NoExit';
+const PARAM_CUR_CONSOLE = '-cur_console';
+const SWITCH_TAB_NAME = ':t:';
+const SWITCH_WORKING_DIR = ':d:';
+const SWITCHES_USEFUL = ':fni:'
 
 const method = Methods[process.argv[2]];
 
@@ -23,7 +23,7 @@ if (!method) {
 }
 
 const execute = `${ConEmuPath} ${PARAM_RUNLIST} ${getCommandForServices(method.services)}`;
-console.log('EXECUTE:', execute);
+console.log(execute);
 
 childProcess.exec(execute, (error, stdout, stderr) => {
   if (error) {
@@ -38,9 +38,6 @@ setTimeout(() => {process.kill(0);}, 10001);
 function getCommandForServices(services) {
   amountColumns = Math.ceil(Math.sqrt(services.length));
   amountRows = amountColumns;
-  console.log('Amount Services:', services.length);
-  console.log('Amount Columns:', amountColumns);
-  console.log('Amount Rows:', amountRows);
 
   const commands = services.map(getCommandForService);
   return commands.join(' ^|^|^| ');
@@ -49,14 +46,15 @@ function getCommandForServices(services) {
 function getCommandForService(service, index) {
   const splitCommand = getSplitCommand(index);
   const command = method.prepareCommand(method.runCommand, index);
-  return `${APPLICATION} ${PARAM_CONSOLE_PATH}${ServicesPath}/${service} ${PARAM_CONSOLE_NAME}"${method.getDisplayName(service)}" ${splitCommand} ${PARAM_NO_LOGO} ${method.noExit ? PARAM_NO_EXIT : ''} ${PARAM_COMMAND} "${command}"`;
+  const curConsole = `${PARAM_CUR_CONSOLE}${SWITCHES_USEFUL}${SWITCH_TAB_NAME}"${method.getDisplayName(service)}"${SWITCH_WORKING_DIR}"${ServicesPath}/${service}"`;
+  return `${APPLICATION} ${method.noExit ? PARAM_NO_EXIT : PARAM_EXIT} "${command}" ${curConsole} ${splitCommand}`;
 }
 
 function getSplitCommand(index) {
   const coordinates = getCoordinatesForConsole(index);
   const consoleSplit = getConsoleSplitForCoordinates(coordinates, index);
 
-  return consoleSplit ? `${PARAM_CONSOLE}:${consoleSplit}` : '';
+  return consoleSplit ? `${PARAM_CUR_CONSOLE}:${consoleSplit}` : '';
 }
 
 function getConsoleSplitForCoordinates(coordinates, index) {
