@@ -1,7 +1,7 @@
 'use strict';
 
 const childProcess = require('child_process');
-const { Methods, ConEmuPath, ServicesPath } = require('./config');
+const { Methods, ConEmuPath, NodeServerPath } = require('./config');
 
 let amountColumns = 0;
 let amountRows = 0;
@@ -23,7 +23,6 @@ if (!method) {
 }
 
 const execute = `${ConEmuPath} ${PARAM_RUNLIST} ${getCommandForServices(method.services)}`;
-console.log(execute);
 
 childProcess.exec(execute, (error, stdout, stderr) => {
   if (error) {
@@ -46,7 +45,7 @@ function getCommandForServices(services) {
 function getCommandForService(service, index) {
   const splitCommand = getSplitCommand(index);
   const command = method.prepareCommand(method.runCommand, index);
-  const curConsole = `${PARAM_CUR_CONSOLE}${SWITCHES_USEFUL}${SWITCH_TAB_NAME}"${method.getDisplayName(service)}"${SWITCH_WORKING_DIR}"${ServicesPath}/${service}"`;
+  const curConsole = `${PARAM_CUR_CONSOLE}${SWITCHES_USEFUL}${SWITCH_TAB_NAME}"${method.getDisplayName(service)}"${SWITCH_WORKING_DIR}"${NodeServerPath}/${service}"`;
   return `${APPLICATION} ${method.noExit ? PARAM_NO_EXIT : PARAM_EXIT} "${command}" ${curConsole} ${splitCommand}`;
 }
 
