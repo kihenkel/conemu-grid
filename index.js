@@ -36,7 +36,7 @@ setTimeout(() => {process.kill(0);}, 10001);
 
 function getCommandForServices(services) {
   amountColumns = Math.ceil(Math.sqrt(services.length));
-  amountRows = amountColumns;
+  amountRows = Math.ceil(services.length / amountColumns);
 
   const commands = services.map(getCommandForService);
   return commands.join(' ^|^|^| ');
