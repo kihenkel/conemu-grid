@@ -2,37 +2,37 @@
 
 const childProcess = require('child_process');
 const { Methods, ConEmuPath } = require('./config');
+const { validateMethod } = require('./validation');
+const APPLICATIONS = require('./applications');
 
-let amountColumns = 0;
-let amountRows = 0;
-
-const APPLICATION = 'cmd.exe';
-const PARAM_EXIT = '/c';
-const PARAM_NO_EXIT = '/k';
 const PARAM_RUNLIST = '-runlist';
 const PARAM_CUR_CONSOLE = '-cur_console';
 const SWITCH_TAB_NAME = ':t:';
 const SWITCH_WORKING_DIR = ':d:';
-const SWITCHES_USEFUL = ':fni:'
+const SWITCHES_USEFUL = ':fni:';
+
+let amountColumns = 0;
+let amountRows = 0;
 
 const method = Methods[process.argv[2]];
 
-if (!method) {
-  console.error('Unknown method param provided:', process.argv[2]);
+if (!validateMethod(method)) {
+  console.error('ERROR: Method is invalid:', method);
   return;
 }
+setTimeout(() => {process.kill(0);}, 10001);
 
 const execute = `${ConEmuPath} ${PARAM_RUNLIST} ${getCommandForServices(method.services)}`;
+console.log(execute);
 
 childProcess.exec(execute, (error, stdout, stderr) => {
   if (error) {
     console.error(`exec error: ${error}`);
     return;
   }
-  console.log(`stdout: ${stdout}`);
-  console.log(`stderr: ${stderr}`);
+  console.log(stdout);
+  console.log(stderr);
 });
-setTimeout(() => {process.kill(0);}, 10001);
 
 function getCommandForServices(services) {
   amountColumns = Math.ceil(Math.sqrt(services.length));
@@ -43,10 +43,12 @@ function getCommandForServices(services) {
 }
 
 function getCommandForService(service, index) {
+  const app = APPLICATIONS[method.application] || APPLICATIONS[APPLICATIONS.default];
   const splitCommand = getSplitCommand(index);
-  const command = method.prepareCommand(method.runCommand, index);
-  const curConsole = `${PARAM_CUR_CONSOLE}${SWITCHES_USEFUL}${SWITCH_TAB_NAME}"${method.getDisplayName(service)}"${SWITCH_WORKING_DIR}"${service}"`;
-  return `${APPLICATION} ${method.noExit ? PARAM_NO_EXIT : PARAM_EXIT} "${command}" ${curConsole} ${splitCommand}`;
+  const command = (method.prepareCommand ? method.prepareCommand(method.runCommand, index) : method.runCommand) || '';
+  const displayName = method.getDisplayName ? method.getDisplayName(service) : service;
+  const curConsole = `${PARAM_CUR_CONSOLE}${SWITCHES_USEFUL}${SWITCH_TAB_NAME}"${displayName}"${SWITCH_WORKING_DIR}"${service}"`;
+  return `${app.executable} ${method.exitAfterExecution ? app.paramExit : app.paramNoExit} ${app.paramAdditional} "${command}" ${curConsole} ${splitCommand}`;
 }
 
 function getSplitCommand(index) {
