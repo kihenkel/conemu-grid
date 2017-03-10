@@ -4,18 +4,18 @@ const validateMethod = (method) => {
     return false;
   }
 
-  if (!method.services) {
-    logError('No services provided');
+  if (!method.paths) {
+    logError('No paths provided');
     return false;
   }
 
-  if (!Array.isArray(method.services)) {
-    logError('Services must be provided as an array');
+  if (!Array.isArray(method.paths)) {
+    logError('paths must be provided as an array');
     return false;
   }
 
-  if (method.services.some(service => typeof service !== 'string')) {
-    logError('All services must be provided as a string');
+  if (method.paths.some(path => typeof path !== 'string')) {
+    logError('All paths must be provided as a string');
     return false;
   }
 

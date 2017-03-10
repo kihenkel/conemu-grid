@@ -3,7 +3,7 @@
 const childProcess = require('child_process');
 const { Methods, ConEmuPath } = require('./config');
 const { validateMethod } = require('./validation');
-const APPLICATIONS = require('./applications');
+const SHELLS = require('./shells');
 
 const PARAM_RUNLIST = '-runlist';
 const PARAM_CUR_CONSOLE = '-cur_console';
@@ -22,7 +22,7 @@ if (!validateMethod(method)) {
 }
 setTimeout(() => {process.kill(0);}, 10001);
 
-const execute = `${ConEmuPath} ${PARAM_RUNLIST} ${getCommandForServices(method.services)}`;
+const execute = `${ConEmuPath} ${PARAM_RUNLIST} ${getCommandForPaths(method.paths)}`;
 console.log(execute);
 
 childProcess.exec(execute, (error, stdout, stderr) => {
@@ -34,20 +34,20 @@ childProcess.exec(execute, (error, stdout, stderr) => {
   console.log(stderr);
 });
 
-function getCommandForServices(services) {
-  amountColumns = Math.ceil(Math.sqrt(services.length));
-  amountRows = Math.ceil(services.length / amountColumns);
+function getCommandForPaths(paths) {
+  amountColumns = Math.ceil(Math.sqrt(paths.length));
+  amountRows = Math.ceil(paths.length / amountColumns);
 
-  const commands = services.map(getCommandForService);
+  const commands = paths.map(getCommandForPath);
   return commands.join(' ^|^|^| ');
 }
 
-function getCommandForService(service, index) {
-  const app = APPLICATIONS[method.application] || APPLICATIONS[APPLICATIONS.default];
+function getCommandForPath(path, index) {
+  const app = SHELLS[method.shell] || SHELLS[SHELLS.default];
   const splitCommand = getSplitCommand(index);
-  const command = method.command ? (typeof method.command === 'function' ? method.command(index) : method.command) : '';
-  const displayName = method.getDisplayName ? method.getDisplayName(service) : service;
-  const curConsole = `${PARAM_CUR_CONSOLE}${SWITCHES_USEFUL}${SWITCH_TAB_NAME}"${displayName}"${SWITCH_WORKING_DIR}"${service}"`;
+  const command = method.command ? (typeof method.command === 'function' ? method.command(path, index) : method.command) : '';
+  const consoleName = method.consoleName ? (typeof method.consoleName === 'function' ? method.consoleName(path, index) : method.consoleName) : path;
+  const curConsole = `${PARAM_CUR_CONSOLE}${SWITCHES_USEFUL}${SWITCH_TAB_NAME}"${consoleName}"${SWITCH_WORKING_DIR}"${path}"`;
   return `${app.executable} ${method.shouldExit ? app.paramExit : app.paramNoExit} ${app.paramAdditional} "${command}" ${curConsole} ${splitCommand}`;
 }
 
