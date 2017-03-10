@@ -15,6 +15,7 @@ let amountColumns = 0;
 let amountRows = 0;
 
 const method = Methods[process.argv[2]];
+console.log('Starting with method', process.argv[2]);
 
 if (!validateMethod(method)) {
   console.error('ERROR: Method is invalid:', method);
@@ -23,7 +24,6 @@ if (!validateMethod(method)) {
 setTimeout(() => {process.kill(0);}, 10001);
 
 const execute = `${ConEmuPath} ${PARAM_RUNLIST} ${getCommandForPaths(method.paths)}`;
-console.log(execute);
 
 childProcess.exec(execute, (error, stdout, stderr) => {
   if (error) {
