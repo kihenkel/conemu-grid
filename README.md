@@ -16,14 +16,13 @@ const ConEmuPath = 'C:/Program Files (x86)/ConEmu/ConEmu64.exe';
 const Methods = {
   'serve': {
     services: APPS,
-    runCommand: 'npm run serve',
+    command: 'npm run serve',
     getDisplayName: app => app.toUpperCase()
   },
   'build': {
     services: APPS,
-    runCommand: 'timeout <%SLEEP%> & npm run serve',
-    prepareCommand: (command, index) => command.replace('<%SLEEP%>', index * 3),
-    exitAfterExecution: true,
+    command: (index) => `timeout ${index * 3} & npm run serve`,
+    shouldExit: true,
     getDisplayName: app => app.toLowerCase()
   },
   'manual': {
@@ -41,8 +40,7 @@ Add a valid config as seen above. Now you can call the application with your pro
 ## Method options
 - `services` - **[required, Array]** Array of strings containing the full path to your js application.
 - `application` - [optional, String] The command line application to use. Currently `cmd` or `powershell`. [default: `cmd`]
-- `runCommand` - [optional, String] The command that should be run on startup. Depends on the used application (see above) [default: *nothing*]
-- `exitAfterExecution` - [optional, Bool] Should the console close after execution? [default: `false`]
+- `command` - [optional, String/Function] The command that should be run on startup. Depends on the used application (see above). When a function is provided it passes the service index as a parameter, useful for eg. modifying the command based on the index. [default: *nothing*]
+- `shouldExit` - [optional, Bool] Should the console close after execution? [default: `false`]
 - `getDisplayName` - [optional, Function] A function which returns the displayed name of the ConEmu console. Gets the service as parameter. [default: *the provided service*]
-- `prepareCommand` - [optional, Function] An array iterator function which returns a modified command. Useful if you want to modify your command based on the index. (see example above) [default: *the provided command*]
 

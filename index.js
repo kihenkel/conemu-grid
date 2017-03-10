@@ -45,10 +45,10 @@ function getCommandForServices(services) {
 function getCommandForService(service, index) {
   const app = APPLICATIONS[method.application] || APPLICATIONS[APPLICATIONS.default];
   const splitCommand = getSplitCommand(index);
-  const command = (method.prepareCommand ? method.prepareCommand(method.runCommand, index) : method.runCommand) || '';
+  const command = method.command ? (typeof method.command === 'function' ? method.command(index) : method.command) : '';
   const displayName = method.getDisplayName ? method.getDisplayName(service) : service;
   const curConsole = `${PARAM_CUR_CONSOLE}${SWITCHES_USEFUL}${SWITCH_TAB_NAME}"${displayName}"${SWITCH_WORKING_DIR}"${service}"`;
-  return `${app.executable} ${method.exitAfterExecution ? app.paramExit : app.paramNoExit} ${app.paramAdditional} "${command}" ${curConsole} ${splitCommand}`;
+  return `${app.executable} ${method.shouldExit ? app.paramExit : app.paramNoExit} ${app.paramAdditional} "${command}" ${curConsole} ${splitCommand}`;
 }
 
 function getSplitCommand(index) {
