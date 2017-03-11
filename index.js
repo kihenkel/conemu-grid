@@ -43,12 +43,14 @@ function getCommandForPaths(paths) {
 }
 
 function getCommandForPath(path, index) {
-  const app = SHELLS[method.shell] || SHELLS[SHELLS.default];
+  const methodShell = method.shell ? (typeof method.shell === 'function' ? method.shell(path, index) : method.shell) : SHELLS.default;
+  const shell = SHELLS[methodShell];
   const splitCommand = getSplitCommand(index);
   const command = method.command ? (typeof method.command === 'function' ? method.command(path, index) : method.command) : '';
   const consoleName = method.consoleName ? (typeof method.consoleName === 'function' ? method.consoleName(path, index) : method.consoleName) : path;
   const curConsole = `${PARAM_CUR_CONSOLE}${SWITCHES_USEFUL}${SWITCH_TAB_NAME}"${consoleName}"${SWITCH_WORKING_DIR}"${path}"`;
-  return `${app.executable} ${method.shouldExit ? app.paramExit : app.paramNoExit} ${app.paramAdditional} "${command}" ${curConsole} ${splitCommand}`;
+  const shouldExit = typeof method.shouldExit === 'function' ? method.shouldExit(path, index) : method.shouldExit;
+  return `${shell.executable} ${shouldExit ? shell.paramExit : shell.paramNoExit} ${shell.paramAdditional} "${command}" ${curConsole} ${splitCommand}`;
 }
 
 function getSplitCommand(index) {

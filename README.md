@@ -17,13 +17,13 @@ const Methods = {
   'serve': {
     paths: APPS,
     command: 'npm run serve',
-    consoleName: app => app.toUpperCase()
+    consoleName: path => path.toUpperCase()
   },
   'build': {
     paths: APPS,
-    command: index => `timeout ${index * 3} & npm run serve`,
+    command: (path, index) => `timeout ${index * 3} & npm run serve`,
     shouldExit: true,
-    consoleName: (app, index) => `${index}: ${app}`
+    consoleName: (path, index) => `${index}: ${path}`
   },
   'manual': {
     paths: APPS,
@@ -40,8 +40,8 @@ Add a valid config as seen above. Now you can call the application with your pro
 
 ## Method options
 - `paths` - **[required, Array]** Array of strings containing the full paths.
-- `shell` - [optional, String] The command line shell to use. Currently `cmd` or `powershell`. [default: `cmd`]
-- `command` - [optional, String/Function] The command that should be run on startup. Depends on the used shell (see above). When a function is provided it passes the `path` and `index` as parameters, useful for eg. modifying the command based on the those values. [default: *nothing*]
-- `shouldExit` - [optional, Bool] Should the console close after execution? [default: `false`]
-- `consoleName` - [optional, String/Function] The name for the ConEmu console. When a function is provided it passes the `path` and `index` as parameters, useful for eg. beautifying the console name. [default: *the provided app*]
+- `shell` - [optional, String/Function] The command line shell to use. Currently `cmd` or `powershell`. When a function is provided it passes the `path` and `index` as parameters. [default: `cmd`]
+- `command` - [optional, String/Function] The command that should be run on startup. Depends on the used shell (see above). When a function is provided it passes the `path` and `index` as parameters. [default: *nothing*]
+- `shouldExit` - [optional, Bool/Function] Should the console close after execution? When a function is provided it passes the `path` and `index` as parameters. [default: `false`]
+- `consoleName` - [optional, String/Function] The name for the ConEmu console. When a function is provided it passes the `path` and `index` as parameters. [default: *the provided path*]
 
