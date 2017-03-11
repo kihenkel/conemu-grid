@@ -27,7 +27,7 @@ const Methods = {
   },
   'manual': {
     paths: APPS,
-    shell: 'powershell'
+    shell: 'powershell',
     consoleName: 'My app'
   },
 };
