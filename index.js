@@ -21,9 +21,9 @@ if (!validateMethod(method)) {
   console.error('ERROR: Method is invalid:', method);
   return;
 }
-setTimeout(() => {process.kill(0);}, 10001);
 
 const execute = `${ConEmuPath} ${PARAM_RUNLIST} ${getCommandForPaths(method.paths)}`;
+setTimeout(() => {process.kill(0);}, method.paths.length * 300);
 
 childProcess.exec(execute, (error, stdout, stderr) => {
   if (error) {
