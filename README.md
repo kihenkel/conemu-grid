@@ -38,6 +38,7 @@ module.exports = { Methods, ConEmuPath };
 Add a valid config as seen above. Now you can call the application with your provided method name, eg.:
 `node .\index.js serve`
 
+
 ## Method options
 - `paths` - **[required, Array]** Array of strings containing the full paths.
 - `shell` - [optional, String/Function] The command line shell to use. Currently `cmd` or `powershell`. When a function is provided it passes the `path` and `index` as parameters. [default: `cmd`]
@@ -45,3 +46,5 @@ Add a valid config as seen above. Now you can call the application with your pro
 - `shouldExit` - [optional, Bool/Function] Should the console close after execution? When a function is provided it passes the `path` and `index` as parameters. [default: `false`]
 - `consoleName` - [optional, String/Function] The name for the ConEmu console. When a function is provided it passes the `path` and `index` as parameters. [default: *the provided path*]
 
+## Max console issue
+ConEmu only allows 30 consoles (tabs) as a maximum. If you provided more than 30 paths conemu-grid will start another instance of ConEmu with the remaining consoles.
