@@ -5,6 +5,7 @@ const { Methods, ConEmuPath } = require('./config');
 const { validateMethod } = require('./validation');
 const SHELLS = require('./shells');
 
+const MAX_CONEMU_TABS = 30;
 const PARAM_RUNLIST = '-runlist';
 const PARAM_CUR_CONSOLE = '-cur_console';
 const SWITCH_TAB_NAME = ':t:';
@@ -22,17 +23,23 @@ if (!validateMethod(method)) {
   return;
 }
 
-const execute = `${ConEmuPath} ${PARAM_RUNLIST} ${getCommandForPaths(method.paths)}`;
+const amountConEmuInstances = Math.ceil(method.paths.length / MAX_CONEMU_TABS);
+for (let i = 0; i < amountConEmuInstances; i++) {
+  const currentPaths = method.paths.slice(i * MAX_CONEMU_TABS, (i + 1) * MAX_CONEMU_TABS);
+  const execute = `${PARAM_RUNLIST} ${getCommandForPaths(currentPaths)}`;
+
+  childProcess.exec(`${ConEmuPath} ${execute}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    console.log(stdout);
+    console.log(stderr);
+  });
+}
 setTimeout(() => {process.kill(0);}, method.paths.length * 300);
 
-childProcess.exec(execute, (error, stdout, stderr) => {
-  if (error) {
-    console.error(`exec error: ${error}`);
-    return;
-  }
-  console.log(stdout);
-  console.log(stderr);
-});
+// ======= Functions =======
 
 function getCommandForPaths(paths) {
   amountColumns = Math.ceil(Math.sqrt(paths.length));
