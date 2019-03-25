@@ -11,5 +11,11 @@ module.exports = {
         paramExit: '',
         paramNoExit: '-NoExit',
         paramAdditional: '-NoLogo'
+    },
+    pwsh: {
+        executable: '*pwsh.exe',
+        paramExit: '',
+        paramNoExit: '-NoExit',
+        paramAdditional: '-NoLogo'
     }
 };
