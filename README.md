@@ -41,7 +41,7 @@ Add a valid config as seen above. Now you can call the application with your pro
 
 ## Method options
 - `paths` - **[required, Array]** Array of strings containing the full paths.
-- `shell` - [optional, String/Function] The command line shell to use. Currently `cmd` or `powershell`. When a function is provided it passes the `path` and `index` as parameters. [default: `cmd`]
+- `shell` - [optional, String/Function] The command line shell to use. Currently `cmd`, `powershell` (<= 5) or `pwsh` (>= 6). When a function is provided it passes the `path` and `index` as parameters. [default: `cmd`]
 - `command` - [optional, String/Function] The command that should be run on startup. Depends on the used shell (see above). When a function is provided it passes the `path` and `index` as parameters. [default: *nothing*]
 - `shouldExit` - [optional, Bool/Function] Should the console close after execution? When a function is provided it passes the `path` and `index` as parameters. [default: `false`]
 - `consoleName` - [optional, String/Function] The name for the ConEmu console. When a function is provided it passes the `path` and `index` as parameters. [default: *the provided path*]
